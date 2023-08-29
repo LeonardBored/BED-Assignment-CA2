@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en" style="visibility:hidden">
+
+<head>
+    <title>SP Air Admin Panel</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- BootStrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Font is awesome icons -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- CSS and JS -->
+    <link rel="stylesheet" type="text/css" href="../css/layout.css">
+    <link rel="stylesheet" type="text/css" href="../css/error_modal.css">
+    <link rel="stylesheet" type="text/css" href="../css/success_modal.css">
+    <link rel="stylesheet" type="text/css" href="../css/login.css">
+    <link rel="stylesheet" type="text/css" href="../css/admin_panel.css">
+</head>
+
+<body>
+    <div class="text-center">
+        <div class="spinner-border text-primary mt-5" role="status" id="loading">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div style="visibility:hidden; position: fixed;" id="awaitLoading">
+        <!-- This will be for authentication as we want authentication before any data has been generated onto page-->
+        <!-- Nav Bar from: https://www.tutorialrepublic.com/snippets/preview.php?topic=bootstrap&file=navbar-with-inline-login-form-in-dropdown -->
+        <!-- Example was using bootstrap 4. i modified it to bootstrap 5-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a href="/" class="navbar-brand">SP<b> AIR</b></a>
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Collection of nav links, forms, and other content for toggling -->
+            <div id="navbarCollapse" class="collapse navbar-collapse">
+                <div class="navbar-nav">
+                    <a href="/" class="nav-item nav-link text-center">Home</a>
+                    <a href="/browse_flights" class="nav-item nav-link text-center"><i class="fa fa-plane"
+                            aria-hidden="true"></i>&nbsp;&nbsp;Browse Flights</a>
+                    <a href="/promotions" class="nav-item nav-link text-center"><i class="fa fa-flag"
+                            aria-hidden="true"></i>&nbsp;&nbsp;Promotions</a>
+                    <a href="#" id="nav_bookingCart" class="nav-item nav-link text-center"></a>
+                    <a href="#" id="admin_panel" class="nav-item nav-link text-center"></a>
+                </div>
+                <div class="navbar-nav ms-auto"><a id="nav-login" href="/login" class="nav-item nav-link text-center"><i
+                            class="fa fa-user-o"></i> Login | Sign Up</a></div>
+            </div>
+        </nav>
+
+        <!-- Tabs navs -->
+        <div class="d-flex justify-content-center">
+            <ul class="nav nav-pills mb-3 mt-5" id="ex1" role="tablist" style="background-color: rgba(255, 255, 255, 0.826);">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active tab-link" id="ex1-tab-1" data-bs-toggle="tab" href="#ex1-tabs-1" role="tab"
+                        aria-controls="ex1-tabs-1" aria-selected="true" style="color: black;">User</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link tab-link" id="ex1-tab-2" data-bs-toggle="tab" href="#ex1-tabs-2" role="tab" 
+                        aria-controls="ex1-tabs-2" aria-selected="false" style="color: black;">Airport</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link tab-link" id="ex1-tab-3" data-bs-toggle="tab" href="#ex1-tabs-3" role="tab"
+                        aria-controls="ex1-tabs-3" aria-selected="false" style="color: black;">Promotion</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link tab-link" id="ex1-tab-4" data-bs-toggle="tab" href="#ex1-tabs-4" role="tab" 
+                        aria-controls="ex1-tabs-4" aria-selected="false" style="color: black;">Flight Promotions</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link tab-link" id="ex1-tab-5" data-bs-toggle="tab" href="#ex1-tabs-5" role="tab"
+                        aria-controls="ex1-tabs-5" aria-selected="false" style="color: black;">Flight</a>
+                </li>
+            </ul>
+        </div>
+
+
+
+
+        <!-- Tabs content -->
+        <div class="tab-content" id="ex1-content">
+            <div class="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1">
+                <div class="container-lg mt-5">
+                    <div class="table-responsive">
+                        <div class="table-wrapper">
+                            <div class="table-title">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h2><i class="fa fa-user" aria-hidden="true"></i>&nbsp;&nbsp;User
+                                            <b>Details</b>
+                                        </h2>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="search-box">
+                                            <div class="input-group">
+                                                <input type="text" id="userSearch" class="form-control"
+                                                    placeholder="Search by User ID">
+                                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-striped table-bordered table-sm" id="userTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10%">user id</th>
+                                        <th style="width: 20%;">username</th>
+                                        <th style="width: 20%;">email</th>
+                                        <th>contact</th>
+                                        <th>role</th>
+                                        <th style="width: 10%;">profile pic</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userInfo"></tbody>
+                            </table>
+                            <div class="text-end">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#registerUserForm"
+                                    class="btn btn-success px-3 mt-3">Add
+                                    User&nbsp;&nbsp;<i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2">
+                <div class="container-lg mt-5">
+                    <div class="table-responsive">
+                        <div class="table-wrapper">
+                            <div class="table-title">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h2><i class="fa fa-location-arrow" aria-hidden="true"></i>&nbsp;&nbsp;Airport
+                                            <b>Details</b>
+                                        </h2>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="search-box">
+                                            <div class="input-group">
+                                                <input type="text" id="airportSearch" class="form-control"
+                                                    placeholder="Search by Airport ID">
+                                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-striped table-bordered table-sm" id="airportTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10%">airport id</th>
+                                        <th style="width: 10%;">name</th>
+                                        <th style="width: 20%;">country</th>
+                                        <th style="width: 20%">coordinate</th>
+                                        <th>Description</th>
+                                        <th style="width: 10%;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="airportInfo"></tbody>
+                            </table>
+                            <div class="text-end">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#registerAirportForm"
+                                    class="btn btn-success px-3 mt-3">Add
+                                    Airport&nbsp;&nbsp;<i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">
+                <div class="container-lg mt-5">
+                    <div class="table-responsive">
+                        <div class="table-wrapper">
+                            <div class="table-title">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h2><i class="fa fa-flag"></i>&nbsp;&nbsp;Promotion
+                                            <b>Details</b>
+                                        </h2>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="search-box">
+                                            <div class="input-group">
+                                                <input type="text" id="promotionSearch" class="form-control"
+                                                    placeholder="Search by Promotion ID">
+                                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-striped table-bordered table-sm" id="promotionTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10%;">promotion id</th>
+                                        <th style="width: 10%;">discount (%)</th>
+                                        <th>promotional start period</th>
+                                        <th>promotional end period</th>
+                                        <th style="width: 10%;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="promotionInfo"></tbody>
+                            </table>
+                            <div class="text-end">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#registerPromotionForm"
+                                    class="btn btn-success px-3 mt-3">Create New
+                                    Promotion&nbsp;&nbsp;<i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="ex1-tabs-4" role="tabpanel" aria-labelledby="ex1-tab-4">
+                <div class="container-lg mt-5">
+                    <div class="table-responsive">
+                        <div class="table-wrapper">
+                            <div class="table-title">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h2><i class="fa fa-flag"></i>&nbsp;&nbsp;Flight Promotion
+                                            <b>Details</b>
+                                        </h2>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="search-box">
+                                            <div class="input-group">
+                                                <input type="text" id="flight_reference_promotionSearch"
+                                                    class="form-control" placeholder="Search by flight promotion id">
+                                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-striped table-bordered table-sm"
+                                id="flight_reference_promotionTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 20%;">flight promotion id</th>
+                                        <th style="width: 10%;">flight id</th>
+                                        <th style="width: 10%;">promotion id</th>
+                                        <th style="width: 10%;">discount (%)</th>
+                                        <th>promotional start period</th>
+                                        <th>promotional end period</th>
+                                        <th style="width: 10%;">Flight Details</th>
+                                        <th style="width: 10%;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="flight_reference_promotionInfo"></tbody>
+                            </table>
+                            <div class="text-end">
+                                <button type="button" data-bs-toggle="modal"
+                                    data-bs-target="#registerFlightPromotionForm" class="btn btn-success px-3 mt-3">Add
+                                    New Promotion to Flight&nbsp;&nbsp;<i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="ex1-tabs-5" role="tabpanel" aria-labelledby="ex1-tab-5">
+                <div class="container-lg mt-5">
+                    <div class="table-responsive">
+                        <div class="table-wrapper">
+                            <div class="table-title">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h2><i class="fa fa-plane" aria-hidden="true"></i>&nbsp;&nbsp;Flight
+                                            <b>Details</b>
+                                        </h2>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="search-box">
+                                            <div class="input-group">
+                                                <input type="text" id="flightSearch" class="form-control"
+                                                    placeholder="Search by Flight ID">
+                                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-striped table-bordered table-sm" id="flightTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10%;">flight id</th>
+                                        <th>flight code</th>
+                                        <th>aircraft</th>
+                                        <th>origin airport</th>
+                                        <th>destination airport</th>
+                                        <th>embark date</th>
+                                        <th style="width: 20%;">travel time</th>
+                                        <th style="width: 10%;">price ($)</th>
+                                        <th style="width: 10%;">Image</th>
+                                        <th>flight details</th>
+                                        <th style="width: 10%;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="flightInfo"></tbody>
+                            </table>
+                            <div class="text-end">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#registerFlightForm"
+                                    class="btn btn-success px-3 mt-3">Add
+                                    Flight&nbsp;&nbsp;<i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Sign Up User Form -->
+    <!-- From: https://www.tutorialrepublic.com/codelab.php?topic=bootstrap&file=simple-registration-form -->
+    <div class="modal fade" id="registerUserForm" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content signup-form">
+                <form id="registerUser">
+                    <div class="text-end">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <h2 class="formHeader">Create</h2>
+                    <p id="userFormTitle" class="hint-text">Create a user account</p>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="text" class="form-control" id="registerUsername" placeholder="Username"
+                                    required="required">
+                                <label for="registerUsername" style="font-size:17px;"><i
+                                        class="fa fa-user userIcon"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Username</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="tel" class="form-control" id="registerTel" placeholder="Contact Number"
+                                    required="required">
+                                <label for="registerTel" style="font-size:17px;"><i
+                                        class="fa fa-phone telIcon"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Contact
+                                    Number</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="registerEmail" placeholder="Email"
+                            required="required">
+                        <label for="registerEmail" style="font-size:17px;"><i
+                                class="fa fa-envelope-o emailIcon"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="registerPassword" placeholder="Password"
+                            required="required">
+                        <label for="registerPassword" style="font-size:17px;"><i
+                                class="fa fa-lock lockIcon"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Password</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password"
+                            required="required">
+                        <label for="confirmPassword" style="font-size:17px;"><i
+                                class="fa fa-lock lockIcon"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Confirm
+                            Password</label>
+                    </div>
+                    <div class="form-group d-grid">
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Create Now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register new airport form -->
+    <div class="modal fade" id="registerAirportForm" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content signup-form">
+                <form id="registerAirport">
+                    <div class="text-end">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <h2 class="formHeader">Create</h2>
+                    <p id="airportFormTitle" class="hint-text">Create an airport.</p>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="text" class="form-control" id="registerAirportName"
+                                    placeholder="Airport Name" required="required">
+                                <label for="registerAirportName" style="font-size:17px;"><i
+                                        class="fa fa-location-arrow"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Airport
+                                    Name</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="text" class="form-control" id="registerCountry" placeholder="Country"
+                                    required="required">
+                                <label for="registerCountry" style="font-size:17px;"><i
+                                        class="fa fa-globe"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Country</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" step=any id="registerX" placeholder="coordinate X"
+                            required="required">
+                        <label for="registerX" style="font-size:17px;"><i
+                                class="fa fa-map-marker"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Coordinate X</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" step=any id="registerY" placeholder="Coordinate Y"
+                            required="required">
+                        <label for="registerY" style="font-size:17px;"><i
+                                class="fa fa-map-marker"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Coordinate Y</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="registerDescription" placeholder="Description"
+                            required="required">
+                        <label for="registerDescription" style="font-size:17px;"><i
+                                class="fa fa-comment"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description</label>
+                    </div>
+                    <div class="form-group d-grid">
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Create Now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register new flight form -->
+    <div class="modal fade" id="registerFlightForm" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content signup-form">
+                <form id="registerFlight">
+                    <div class="text-end">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <h2 class="formHeader">Create</h2>
+                    <p id="flightFormTitle" class="hint-text">Create a new flight.</p>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="text" class="form-control" id="registerFlightCode"
+                                    placeholder="Flight Code" required="required">
+                                <label for="registerFlightCode" style="font-size:17px;"><i
+                                        class="fa fa-ravelry"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flight
+                                    Code</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="text" class="form-control" id="registerAircraft" placeholder="Aircraft"
+                                    required="required">
+                                <label for="registerAircraft" style="font-size:17px;"><i
+                                        class="fa fa-plane"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Aircraft</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <select id="registerOriginAirport" class="form-select" required>
+                                    <option hidden value="">Choose...</option>
+                                </select>
+                                <label for="registerOriginAirport" style="font-size:17px;"><i
+                                        class="fa fa-map-marker"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Origin</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <select id="registerDestinationAirport" class="form-select" required>
+                                    <option hidden value="">Choose...</option>
+                                </select>
+                                <label for="registerDestinationAirport" style="font-size:17px;"><i
+                                        class="fa fa-map-marker"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destination</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="datetime-local" class="form-control" id="registerEmbarkDate"
+                                    placeholder="Embark Date" required="required">
+                                <label for="registerEmbarkDate" style="font-size:17px;"><i
+                                        class="fa fa-calendar"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Embark
+                                    Date</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="text" class="form-control" id="registerTravelTime"
+                                    placeholder="Travel Time" required="required">
+                                <label for="registerTravelTime" style="font-size:17px;"><i
+                                        class="fa fa-clock-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Travel
+                                    Time</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="registerPrice" placeholder="Price" min="1"
+                            required="required">
+                        <label for="registerPrice" style="font-size:17px;"><i
+                                class="fa fa-money"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price</label>
+                    </div>
+
+                    <input class="form-control" type="file" id="registerFlightImg" accept=".png, .jpg">
+
+                    <div class="form-group d-grid mt-3">
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Create Now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="registerPromotionForm" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content signup-form">
+                <form id="registerPromotion">
+                    <div class="text-end">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <h2 class="formHeader">Create</h2>
+                    <p id="promotionFormTitle" class="hint-text">Create a new promotion</p>
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="registerDiscount" placeholder="Discount (%)"
+                            required="required" min="1" max="99">
+                        <label for="registerDiscount" style="font-size:17px;"><i
+                                class="fa fa-flag"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Discount (%)</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="datetime-local" class="form-control" id="registerPromotionalStart"
+                            placeholder="Promotional Start" required="required">
+                        <label for="registerPromotionalStart" style="font-size:17px;"><i
+                                class="fa fa-clock-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Promotional Start</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="datetime-local" class="form-control" id="registerPromotionalEnd"
+                            placeholder="Promotional End" required="required">
+                        <label for="registerPromotionalEnd" style="font-size:17px;"><i
+                                class="fa fa-clock-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Promotional End</label>
+                    </div>
+
+                    <div class="form-group d-grid mt-5">
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Create Now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="registerFlightPromotionForm" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content signup-form">
+                <form id="registerFlightPromotion" style="height: 100%" class="mb-0">
+                    <div class="text-end">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <h2 class="formHeader">Create</h2>
+                    <p id="flightPromotionFormTitle" class="hint-text">Create a new flight promotion promotion</p>
+
+                    <div class="row mb-5">
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <select id="registerFlightid" class="form-select" required>
+                                    <option hidden value="">Choose...</option>
+                                </select>
+                                <label for="registerFlightid" style="font-size:17px;"><i
+                                        class="fa fa-plane"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flight ID</label>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <select id="registerPromotionid" class="form-select" required>
+                                    <option hidden value="">Choose...</option>
+                                </select>
+                                <label for="registerPromotionid" style="font-size:17px;"><i
+                                        class="fa fa-flag"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Promotion ID</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group d-grid mt-5">
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Create Now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateUserForm" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content signup-form">
+                <form id="updateUser">
+                    <div class="text-end">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <h2 class="formHeader">Update</h2>
+                    <p id="userFormTitle" class="hint-text">Update a user account</p>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="text" class="form-control" id="updateUsername" placeholder="Username"
+                                    required>
+                                <label for="updateUsername" style="font-size:17px;"><i
+                                        class="fa fa-user userIcon"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Username</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="tel" class="form-control" id="updateTel" placeholder="Contact Number"
+                                    required>
+                                <label for="updateTel" style="font-size:17px;"><i
+                                        class="fa fa-phone telIcon"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Contact
+                                    Number</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="updateEmail" placeholder="Email" required>
+                        <label for="updateEmail" style="font-size:17px;"><i
+                                class="fa fa-envelope-o emailIcon"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="updateRole" placeholder="Role" required>
+                        <label for="updateRole" style="font-size:17px;"><i
+                                class="fa fa-users"></i>&nbsp;&nbsp;Role</label>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label style="color: black;"><i class="fa fa-file-image-o"></i>&nbsp;&nbsp;profile pic</label>
+                        <input class="form-control mb-3" type="file" id="updateUserImg" accept=".png, .jpg">
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="updatePassword" placeholder="Password">
+                        <label for="updatePassword" style="font-size:17px;"><i
+                                class="fa fa-lock lockIcon"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Password</label>
+                    </div>
+
+
+                    <div class="form-group d-grid">
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Update Now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateAirportForm" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content signup-form">
+                <form id="updateAirport">
+                    <div class="text-end">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <h2 class="formHeader">Update</h2>
+                    <p id="userFormTitle" class="hint-text">Update a airport</p>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="text" class="form-control" id="updateAirportName"
+                                    placeholder="Airport Name" required="required">
+                                <label for="updateAirportName" style="font-size:17px;"><i
+                                        class="fa fa-location-arrow"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Airport
+                                    Name</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="text" class="form-control" id="updateCountry" placeholder="Country"
+                                    required="required">
+                                <label for="updateCountry" style="font-size:17px;"><i
+                                        class="fa fa-globe"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Country</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" step=any class="form-control" id="updateX" placeholder="coordinate X"
+                            required="required">
+                        <label for="updateX" style="font-size:17px;"><i
+                                class="fa fa-map-marker"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Coordinate X</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" step=any class="form-control" id="updateY" placeholder="Coordinate Y"
+                            required="required">
+                        <label for="updateY" style="font-size:17px;"><i
+                                class="fa fa-map-marker"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Coordinate Y</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="updateDescription" placeholder="Description"
+                            required="required">
+                        <label for="updateDescription" style="font-size:17px;"><i
+                                class="fa fa-comment"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description</label>
+                    </div>
+                    <div class="form-group d-grid">
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Update Now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updatePromotionForm" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content signup-form">
+                <form id="updatePromotion">
+                    <div class="text-end">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <h2 class="formHeader">Update</h2>
+                    <p id="promotionFormTitle" class="hint-text">Update a promotion</p>
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="updateDiscount" placeholder="Discount (%)"
+                            required="required" min="1" max="99">
+                        <label for="updateDiscount" style="font-size:17px;"><i
+                                class="fa fa-flag"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Discount (%)</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="datetime-local" class="form-control" id="updatePromotionalStart"
+                            placeholder="Promotional Start" required="required">
+                        <label for="updatePromotionalStart" style="font-size:17px;"><i
+                                class="fa fa-clock-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Promotional Start</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="datetime-local" class="form-control" id="updatePromotionalEnd"
+                            placeholder="Promotional End" required="required">
+                        <label for="updatePromotionalEnd" style="font-size:17px;"><i
+                                class="fa fa-clock-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Promotional End</label>
+                    </div>
+
+                    <div class="form-group d-grid mt-5">
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Update Now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateFlightPromotionForm" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content signup-form">
+                <form id="updateFlightPromotion" style="height: 100%" class="mb-0">
+                    <div class="text-end">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <h2 class="formHeader">Update</h2>
+                    <p class="hint-text">Update a flight promotion</p>
+
+                    <div class="row mb-5">
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <select id="updateFlightid" class="form-select" required>
+                                    <option hidden value="">Choose...</option>
+                                </select>
+                                <label for="updateFlightid" style="font-size:17px;"><i
+                                        class="fa fa-plane"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flight ID</label>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <select id="updatePromotionid" class="form-select" required>
+                                    <option hidden value="">Choose...</option>
+                                </select>
+                                <label for="updatePromotionid" style="font-size:17px;"><i
+                                        class="fa fa-flag"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Promotion ID</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group d-grid mt-5">
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Update Now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateFlightForm" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content signup-form">
+                <form id="updateFlight">
+                    <div class="text-end">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <h2 class="formHeader">Update</h2>
+                    <p class="hint-text">Update a flight</p>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="text" class="form-control" id="updateFlightCode" placeholder="Flight Code"
+                                    required="required">
+                                <label for="updateFlightCode" style="font-size:17px;"><i
+                                        class="fa fa-ravelry"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flight
+                                    Code</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="text" class="form-control" id="updateAircraft" placeholder="Aircraft"
+                                    required="required">
+                                <label for="updateAircraft" style="font-size:17px;"><i
+                                        class="fa fa-plane"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Aircraft</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <select id="updateOrigin" class="form-select" required>
+                                    <option hidden value="">Choose...</option>
+                                </select>
+                                <label for="updateOriginAirport" style="font-size:17px;"><i
+                                        class="fa fa-map-marker"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Origin</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <select id="updateDestination" class="form-select" required>
+                                    <option hidden value="">Choose...</option>
+                                </select>
+                                <label for="updateDestinationAirport" style="font-size:17px;"><i
+                                        class="fa fa-map-marker"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destination</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="datetime-local" class="form-control" id="updateEmbarkDate"
+                            placeholder="Embark Date" required="required">
+                        <label for="updateEmbarkDate" style="font-size:17px;"><i
+                                class="fa fa-calendar"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Embark
+                            Date</label>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="text" class="form-control" id="updateTravelTime" placeholder="Travel Time"
+                                    required="required">
+                                <label for="updateTravelTime" style="font-size:17px;"><i
+                                        class="fa fa-clock-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Travel
+                                    Time</label>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-floating px-0">
+                                <input type="number" class="form-control" step=any id="updatePrice" placeholder="Price" min="1"
+                                    required="required">
+                                <label for="updatePrice" style="font-size:17px;"><i
+                                        class="fa fa-money"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label style="color: black;"><i class="fa fa-file-image-o"></i>&nbsp;&nbsp;flight pic</label>
+                        <input class="form-control" type="file" id="updateFlightImg" accept=".png, .jpg">
+                    </div>
+
+                    <div class="form-group d-grid mt-3">
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Update Now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal HTML -->
+    <div id="deleteModal" class="modal fade">
+        <div class="modal-dialog modal-confirm error-confirm">
+            <div class="modal-content error-content">
+                <div class="modal-header justify-content-center error-header">
+                    <div class="icon-box">
+                        <i class="fa fa-times"></i>
+                    </div>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body text-center">
+                    <h4>Confirm Delete?</h4>
+                    <p id="deleteMessage" class="mt-4"></p>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <button type="button" data-bs-dismiss="modal" class="btn btn-warning">Cancel</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" style="background: #ea4242 !important" class="btn btn-danger"
+                                id="confirmDelete">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal HTML -->
+    <div id="errorModal" class="modal fade">
+        <div class="modal-dialog modal-confirm error-confirm">
+            <div class="modal-content error-content">
+                <div class="modal-header justify-content-center error-header">
+                    <div class="icon-box">
+                        <i class="fa fa-times"></i>
+                    </div>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body text-center">
+                    <h4>Ooops!</h4>
+                    <p id="errorMessage"></p>
+                    <button class="btn btn-success" data-bs-dismiss="modal">Try Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Success Modal HTML -->
+    <div id="successModal" class="modal fade">
+        <div class="modal-dialog modal-confirm success-confirm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="icon-box">
+                        <i class="fa fa-check"></i>
+                    </div>
+                    <h4 class="modal-title w-100">Success!</h4>
+                </div>
+                <div class="modal-body text-center">
+                    <p id="successMessage"></p>
+                </div>
+                <div class="d-grid">
+                    <button id="OK_btn" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Footer -->
+    <footer class="page-footer font-small pt-4" style="visibility:hidden;" id="footerVisible">
+        <!-- Footer Text -->
+        <div class="container-fluid text-center text-md-left">
+            <!-- Grid row -->
+            <div class="row">
+                <!-- Grid column -->
+                <div class="col-md-6 text-center">
+
+                    <!-- Content -->
+                    <h5 class="text-uppercase fw-bold">BED Assignment CA2</h5>
+                    <p>Made using Express and Bootstrap 5</p>
+
+                </div>
+
+                <!-- Grid column -->
+                <div class="col-md-3 text-start">
+                    <!-- Content -->
+                    <h5 class="text-uppercase fw-bold">SP Air</h5>
+                    <p>Web Application of <br>an airport booking service</p>
+                </div>
+
+                <!-- Grid column -->
+                <div class="col-md-3 mb-md-0 mb-3 text-start">
+                    <!-- Content -->
+                    <h5 class="text-uppercase fw-bold">Made By</h5>
+                    <p>Soh Kai Meng Leonard</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer -->
+    <!-- Scripts for bootstrap 5 -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+
+    <!-- JQuery-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <!-- Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <!-- Below is the data table cdn that i will be using for pagination of my tables -->
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.12.1/r-2.3.0/datatables.min.css" />
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.12.1/r-2.3.0/datatables.min.js"></script>
+
+
+    <script type="text/javascript" src="../JS_Files/verify_admin.js"></script>
+    <script src="../JS_Files/admin_panel.js"></script>
+</body>
+
+</html>

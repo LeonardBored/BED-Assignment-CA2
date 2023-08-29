@@ -1,0 +1,174 @@
+.carousel {
+  height: 550px;
+}
+
+.carousel-inner {
+  top: 0;
+  height: 100%;
+  position: relative;
+  color: rgba(241, 219, 219, 0.911);
+  width: 100%;
+}
+
+.carousel-item {
+  top: 0;
+  height: 100%;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+}
+
+#fixed_text {
+  position: absolute;
+  padding-top: 10%;
+  color: lavenderblush;
+  text-shadow: 1px 1px darkkhaki;
+}
+
+.country {
+  padding-top: 37vh;
+}
+
+.ad1 {
+  background-image: url('../images/japan.jpg');
+}
+
+.ad2 {
+  background-image: url('../images/malaysia.jpg');
+}
+
+.ad3 {
+  background-image: url('../images/singapore.jpg');
+}
+
+.ad4 {
+  background-image: url('../images/sanFrancisco.jpg');
+}
+
+.ad5 {
+  background-image: url('../images/andMore.jpg');
+}
+
+#Intro_SP_Air {
+  font-size: 1.3em;
+  padding: 20px;
+  border-radius: 25px;
+}
+
+#searchForm {
+  padding: 10px 70px 30px 70px;
+  background-color: white;
+  border-radius: 25px;
+  box-shadow: 2px 4px 5px rgba(0, 0, 0, 0.3);
+  -webkit-animation: slide-in-elliptic-top-fwd 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  animation: slide-in-elliptic-top-fwd 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+.searchResultDiv {
+  box-shadow: 2px 4px 5px rgba(0, 0, 0, 0.3);
+  animation: slide-in-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@-webkit-keyframes slide-in-elliptic-top-fwd {
+  0% {
+    -webkit-transform: translateY(-600px) rotateX(-30deg) scale(0);
+    transform: translateY(-600px) rotateX(-30deg) scale(0);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 0;
+  }
+
+  100% {
+    -webkit-transform: translateY(0) rotateX(0) scale(1);
+    transform: translateY(0) rotateX(0) scale(1);
+    -webkit-transform-origin: 50% 1400px;
+    transform-origin: 50% 1400px;
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-elliptic-top-fwd {
+  0% {
+    -webkit-transform: translateY(-600px) rotateX(-30deg) scale(0);
+    transform: translateY(-600px) rotateX(-30deg) scale(0);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 0;
+  }
+
+  100% {
+    -webkit-transform: translateY(0) rotateX(0) scale(1);
+    transform: translateY(0) rotateX(0) scale(1);
+    -webkit-transform-origin: 50% 1400px;
+    transform-origin: 50% 1400px;
+    opacity: 1;
+  }
+}
+
+
+#surveyLegend {
+  color: rgb(37, 90, 206);
+  /* Color of the text */
+  padding: 5px;
+  /* some inner spacing */
+  text-shadow: 1px 1px black;
+  /* Text shadow */
+  border-color: #2196F3;
+  border-left: 6px solid;
+}
+
+body {
+  padding-right: 0 !important;
+}
+
+
+@keyframes slide-in-left {
+  0% {
+    transform: translateX(-1000px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+html,body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.benefitText {
+  color: darkgrey;
+}
+
+.comfortFlight:hover, .comfortFlight:hover > .benefitText, .flightAnywhere:hover, .flightAnywhere:hover > .benefitText, .MoneyAir:hover, .MoneyAir:hover > .benefitText{
+  animation: bounce-top 0.5s both;
+  color: black;
+}
+
+@keyframes bounce-top {
+  100% {
+    transform: translateY(-10px);
+  }
+}
+
+.moreDetails, .moreDetailsIcon{
+  color: darkgrey;
+  text-decoration: none;
+}
+
+.moreDetails:hover{
+  color: black;
+  text-decoration: underline;
+}
+
+.moreDetailsIcon:hover {
+  color: black;
+}
+
+.searchResultDiv:hover {
+  box-shadow: 6px 12px 15px rgba(0, 0, 0, 0.5);
+}

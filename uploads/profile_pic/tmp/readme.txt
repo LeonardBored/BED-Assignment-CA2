@@ -1,0 +1,1 @@
+this folder is used to store all temporary image files before processing. After processing, if it is valid, it will be moved to main folder 
